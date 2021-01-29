@@ -1,8 +1,14 @@
-platform :osx, '10.8'
+# Uncomment this line to define a global platform for your project
+platform :osx, '10.10'
+# Uncomment this line if you're using Swift
+# use_frameworks!
 
-xcodeproj 'JSONAccelerator.xcodeproj'
+target 'JSON Accelerator' do
+  pod 'AFNetworking' 
+  pod 'Sparkle', '~> 1.0'
+end
 
-pod 'AFNetworking'
-pod 'iRate'
-pod 'MASPreferences', '1.0'
-pod 'OpenSSL'
+target 'json-accelerator' do
+
+end
+

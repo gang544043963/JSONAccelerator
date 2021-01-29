@@ -75,6 +75,8 @@
 {
 	[super encodeWithCoder:encoder];
 	
+	
+	
 	if ([encoder allowsKeyedCoding])
 	{
 		[encoder encodeObject:@(_lineNumber) forKey:NOODLE_LINE_CODING_KEY];

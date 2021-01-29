@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment version="1080" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9532"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication"/>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application">
+        <customObject id="-3" userLabel="Application" customClass="NSObject">
             <connections>
-                <outlet property="delegate" destination="494" id="648"/>
+                <outlet property="delegate" destination="494" id="629"/>
             </connections>
         </customObject>
         <menu systemMenu="main" id="29">
@@ -24,6 +23,15 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="236">
+                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                            </menuItem>
+                            <menuItem title="Check For Updates..." id="599">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="checkForUpdates:" target="598" id="600"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="143">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
                             <menuItem title="Services" id="131">
@@ -59,18 +67,18 @@
                         </items>
                     </menu>
                 </menuItem>
-                <menuItem title="File" id="624">
+                <menuItem title="File" id="605">
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="File" id="625">
+                    <menu key="submenu" title="File" id="606">
                         <items>
-                            <menuItem title="New" keyEquivalent="n" id="626">
+                            <menuItem title="New" keyEquivalent="n" id="607">
                                 <connections>
-                                    <action selector="newDocument:" target="-1" id="642"/>
+                                    <action selector="newDocument:" target="-1" id="623"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Close" keyEquivalent="w" id="630">
+                            <menuItem title="Close" keyEquivalent="w" id="645">
                                 <connections>
-                                    <action selector="performClose:" target="-1" id="641"/>
+                                    <action selector="performClose:" target="-1" id="646"/>
                                 </connections>
                             </menuItem>
                         </items>
@@ -90,15 +98,15 @@
                                     <action selector="redo:" target="-1" id="231"/>
                                 </connections>
                             </menuItem>
-                            <menuItem isSeparatorItem="YES" id="651">
+                            <menuItem isSeparatorItem="YES" id="206">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Reflow" keyEquivalent="r" id="652">
+                            <menuItem title="Reflow" keyEquivalent="r" id="651">
                                 <connections>
                                     <action selector="reflowDocument:" target="494" id="653"/>
                                 </connections>
                             </menuItem>
-                            <menuItem isSeparatorItem="YES" id="206">
+                            <menuItem isSeparatorItem="YES" id="650">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
                             <menuItem title="Cut" keyEquivalent="x" id="199">
@@ -187,23 +195,6 @@
                         </items>
                     </menu>
                 </menuItem>
-                <menuItem title="View" id="295">
-                    <menu key="submenu" title="View" id="296">
-                        <items>
-                            <menuItem title="Show Toolbar" keyEquivalent="t" id="297">
-                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
-                                <connections>
-                                    <action selector="toggleToolbarShown:" target="-1" id="366"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="Customize Toolbar…" id="298">
-                                <connections>
-                                    <action selector="runToolbarCustomizationPalette:" target="-1" id="365"/>
-                                </connections>
-                            </menuItem>
-                        </items>
-                    </menu>
-                </menuItem>
                 <menuItem title="Window" id="19">
                     <menu key="submenu" title="Window" systemMenu="window" id="24">
                         <items>
@@ -232,10 +223,10 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Help" systemMenu="help" id="491">
                         <items>
-                            <menuItem title="Send Feedback" id="649">
+                            <menuItem title="Send Feedback" id="647">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="feedbackMenuSelected:" target="494" id="650"/>
+                                    <action selector="feedbackMenuSelected:" target="494" id="649"/>
                                 </connections>
                             </menuItem>
                         </items>
@@ -245,5 +236,6 @@
         </menu>
         <customObject id="494" customClass="AppDelegate"/>
         <customObject id="420" customClass="NSFontManager"/>
+        <customObject id="598" customClass="SUUpdater"/>
     </objects>
 </document>

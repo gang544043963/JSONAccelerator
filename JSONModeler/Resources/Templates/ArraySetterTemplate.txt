@@ -1,5 +1,6 @@
     NSObject *received{REFERENCE_CLASS} = [dict objectForKey:{JSONNAME}];
     NSMutableArray *parsed{REFERENCE_CLASS} = [NSMutableArray array];
+    
     if ([received{REFERENCE_CLASS} isKindOfClass:[NSArray class]]) {
         for (NSDictionary *item in (NSArray *)received{REFERENCE_CLASS}) {
             if ([item isKindOfClass:[NSDictionary class]]) {

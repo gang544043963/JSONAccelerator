@@ -1,61 +1,33 @@
 //
-//  NILAppDelegate.m
-//  JSONModeler
+// Copyright 2016 The Nerdery, LLC
 //
-//  Created by Jon Rexeisen on 11/3/11.
-//  Copyright (c) 2011 Nerdery Interactive Labs. All rights reserved.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #import "AppDelegate.h"
 #import "JSONModeler.h"
 #import "ClassBaseObject.h"
 #import "MainWindowController.h"
-#import "MASPreferencesWindowController.h"
-#import "JRFeedbackController.h"
-#import "DFFeedbackWindowController.h"
-#import "DFCrashReportWindowController.h"
 #import "ModelerDocument.h"
-#import "iRate.h"
-
-@interface AppDelegate () {
-    
-    MASPreferencesWindowController *_preferencesWindowController;
-    
-}
-
-@end
-
 
 @implementation AppDelegate
 
-+ (void)initialize
-{
-    //configure iRate
-#ifndef NORATE
-    [iRate sharedInstance].appStoreID = 511324989;
-    [iRate sharedInstance].usesUntilPrompt = 4;
-#endif
-}
-
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
-{
-    _preferencesWindowController = nil;
-    [DFFeedbackWindowController initializeWithFeedbackUrl:@"http://www.jsonmodeler.com/feedback.php"
-                                   systemProfileDataTypes:DFSystemProfileData_All];
-    
-    [DFCrashReportWindowController initializeWithFeedbackUrl:@"http://www.jsonmodeler.com/feedback.php"
-                                                   updateUrl:@""
-                                                        icon:nil
-                                      systemProfileDataTypes:DFSystemProfileData_All];
-}
-
--(BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender {
+- (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender {
     return YES;
 }
 
--(BOOL)application:(NSApplication *)sender openFile:(NSString *)filename {
+- (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename {
     
-    if ([[filename pathExtension] isEqualToString:@"json"]) {
+    if ([filename.pathExtension isEqualToString:@"json"]) {
         [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:[NSURL fileURLWithPath:filename] display:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error) {}];
         return YES;
     }
@@ -64,22 +36,10 @@
     
 }
 
-- (IBAction)openPreferences:(id)sender 
-{
-    
-}
-
-- (IBAction)reflowDocument:(id)sender
-{
-    ModelerDocument *docController = [[NSDocumentController sharedDocumentController] currentDocument];
-    MainWindowController *windowController = [docController windowControllers][0];
+- (IBAction)reflowDocument:(id)sender {
+    ModelerDocument *docController = [NSDocumentController sharedDocumentController].currentDocument;
+    MainWindowController *windowController = docController.windowControllers[0];
     [windowController verifyJSONString];
-}
-
-- (IBAction)feedbackMenuSelected:(id)sender
-{
-//    [JRFeedbackController showFeedback];
-    [[DFFeedbackWindowController singleton] show];
 }
 
 @end

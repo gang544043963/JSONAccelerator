@@ -37,8 +37,7 @@
 
 @class NoodleLineNumberMarker;
 
-@interface NoodleLineNumberView : NSRulerView
-{
+@interface NoodleLineNumberView : NSRulerView {
     // Array of character indices for the beginning of each line
     NSMutableArray      *_lineIndices;
 	// Maps line numbers to markers
@@ -50,21 +49,17 @@
     float               value;
 }
 
-- (id)initWithScrollView:(NSScrollView *)aScrollView;
+- (instancetype)initWithScrollView:(NSScrollView *)aScrollView;
 
-- (id)initWithScrollView:(NSScrollView *)scrollView orientation:(NSRulerOrientation)orientation;
+- (instancetype)initWithScrollView:(NSScrollView *)scrollView orientation:(NSRulerOrientation)orientation NS_DESIGNATED_INITIALIZER;
 
-- (void)setFont:(NSFont *)aFont;
-- (NSFont *)font;
+@property (NS_NONATOMIC_IOSONLY, copy) NSFont *font;
 
-- (void)setTextColor:(NSColor *)color;
-- (NSColor *)textColor;
+@property (NS_NONATOMIC_IOSONLY, copy) NSColor *textColor;
 
-- (void)setAlternateTextColor:(NSColor *)color;
-- (NSColor *)alternateTextColor;
+@property (NS_NONATOMIC_IOSONLY, copy) NSColor *alternateTextColor;
 
-- (void)setBackgroundColor:(NSColor *)color;
-- (NSColor *)backgroundColor;
+@property (NS_NONATOMIC_IOSONLY, copy) NSColor *backgroundColor;
 
 - (NSUInteger)lineNumberForLocation:(CGFloat)location;
 - (NoodleLineNumberMarker *)markerAtLine:(NSUInteger)line;

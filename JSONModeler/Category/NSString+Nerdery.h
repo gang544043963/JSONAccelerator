@@ -1,17 +1,23 @@
+// Copyright 2016 The Nerdery, LLC
 //
-//  NSString+NSString_Nerdery.h
-//  JSONModeler
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
-//  Created by Jon Rexeisen on 11/4/11.
-//  Copyright (c) 2011 Nerdery Interactive Labs. All rights reserved.
+// http://www.apache.org/licenses/LICENSE-2.0
 //
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #import <Foundation/Foundation.h>
 
 @interface NSString (Nerdery)
 
-- (NSString *)capitalizeFirstCharacter;
-- (NSString *)uncapitalizeFirstCharacter;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *capitalizeFirstCharacter;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *uncapitalizeFirstCharacter;
 
 /**
  * Returns a string by removing all characters except those in the set [A-Za-z0-9_]. Also returns by reference a BOOL that indicates whether the returned string is one of the words in the set `reservedWords`. Note: this method will return the empty string if the receiver consists entirely of characters outside the alphanumeric set.
@@ -22,9 +28,10 @@
  */
 - (NSString *)alphanumericStringIsReservedWord:(BOOL *)reserved fromReservedWordSet:(NSSet *)reservedWords;
 
-- (NSString *)underscoreDelimitedString;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *underscoreDelimitedString;
 
-- (NSString *)uppercaseCamelcaseString;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *uppercaseCamelcaseString;
 
-- (NSString *)lowercaseCamelcaseString;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *lowercaseCamelcaseString;
+
 @end

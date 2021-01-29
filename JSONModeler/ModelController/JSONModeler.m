@@ -1,10 +1,17 @@
 //
-//  JSONModeler.m
-//  JSONModeler
+// Copyright 2016 The Nerdery, LLC
 //
-//  Created by Jon Rexeisen on 11/3/11.
-//  Copyright (c) 2011 Nerdery Interactive Labs. All rights reserved.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #import "JSONModeler.h"
 #import "ClassBaseObject.h"
@@ -16,33 +23,31 @@
     #import "JSONFetcher.h"
 #endif
 
+@interface JSONModeler ()
 
-@interface JSONModeler () {
-    NSUInteger _numUnnamedClasses;
-}
-
+@property (assign, nonatomic) NSInteger numberOfUnnamedClasses;
+    
 - (void)loadJSONWithData:(NSData *)data outputLanguageWriter:(id<OutputLanguageWriterProtocol>)writer;
 - (ClassBaseObject *)parseData:(NSDictionary *)dict intoObjectsWithBaseObjectName:(NSString *)baseObjectName andBaseObjectClass:(NSString *)baseObjectClass outputLanguageWriter:(id<OutputLanguageWriterProtocol>)writer;
 
 @end
 
 @implementation JSONModeler
-@synthesize rawJSONObject = _rawJSONDictionary;
-@synthesize parsedDictionary = _parsedDictionary;
-@synthesize parseComplete = _parseComplete;
-@synthesize JSONString = _JSONString;
 
-- (id)init {
+- (instancetype)init {
     self = [super init];
+    
+    
+    
     if (self) {
-        _numUnnamedClasses = 0;
+        self.numberOfUnnamedClasses = 0;
     }
+    
     return self;
 }
 
 #ifndef COMMAND_LINE
-- (void)loadJSONWithURL:(NSString *)url outputLanguageWriter:(id<OutputLanguageWriterProtocol>)writer
-{
+- (void)loadJSONWithURL:(NSString *)url outputLanguageWriter:(id<OutputLanguageWriterProtocol>)writer {
     JSONFetcher *fetcher = [[JSONFetcher alloc] init];
     [fetcher downloadJSONFromLocation:url withSuccess:^(id object) {
         [self loadJSONWithData:object outputLanguageWriter:writer];
@@ -51,15 +56,14 @@
        NSLog(@"An error occured here, but it's not too much trouble because this method is only used in debugging");
    }];
 }
+
 #endif
 
-- (void)loadJSONWithString:(NSString *)string outputLanguageWriter:(id<OutputLanguageWriterProtocol>)writer
-{
+- (void)loadJSONWithString:(NSString *)string outputLanguageWriter:(id<OutputLanguageWriterProtocol>)writer {
     [self loadJSONWithData:[string dataUsingEncoding:NSUTF8StringEncoding] outputLanguageWriter:writer];
 }
 
-- (void)loadJSONWithData:(NSData *)data outputLanguageWriter:(id<OutputLanguageWriterProtocol>)writer
-{
+- (void)loadJSONWithData:(NSData *)data outputLanguageWriter:(id<OutputLanguageWriterProtocol>)writer {
     NSError *error = nil;    
     self.parsedDictionary = nil;
         
@@ -68,18 +72,24 @@
     // Just for testing
     id object = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
     
-    if([object isKindOfClass:[NSDictionary class]]) {
+    
+    
+    if ([object isKindOfClass:[NSDictionary class]]) {
         self.rawJSONObject = object;
         self.parseComplete = NO;
         [self parseData:(NSDictionary *)self.rawJSONObject intoObjectsWithBaseObjectName:@"InternalBaseClass" andBaseObjectClass:@"NSObject" outputLanguageWriter:writer];
         self.parseComplete = YES;
     }
     
-    if([object isKindOfClass:[NSArray class]]) {
+    if ([object isKindOfClass:[NSArray class]]) {
         self.parseComplete = NO;
-        self.rawJSONObject = object;        
-        for(NSObject *arrayObject in (NSArray *)object) {
-            if([arrayObject isKindOfClass:[NSDictionary class]]) {
+        self.rawJSONObject = object;
+        
+        
+        
+        for (NSObject *arrayObject in (NSArray *)object) {
+            
+            if ([arrayObject isKindOfClass:[NSDictionary class]]) {
                 [self parseData:(NSDictionary *)arrayObject intoObjectsWithBaseObjectName:@"InternalBaseClass" andBaseObjectClass:@"NSObject" outputLanguageWriter:writer];
             }
         }
@@ -89,131 +99,146 @@
 
 #pragma mark - Create the model objects
 
-- (ClassBaseObject *)parseData:(NSDictionary *)dict intoObjectsWithBaseObjectName:(NSString *)baseObjectName andBaseObjectClass:(NSString *)baseObjectClass outputLanguageWriter:(id<OutputLanguageWriterProtocol>)writer
-{
-    if(_parsedDictionary == nil) {
+- (ClassBaseObject *)parseData:(NSDictionary *)dict intoObjectsWithBaseObjectName:(NSString *)baseObjectName andBaseObjectClass:(NSString *)baseObjectClass outputLanguageWriter:(id<OutputLanguageWriterProtocol>)writer {
+    
+    if (self.parsedDictionary == nil) {
         self.parsedDictionary = [NSMutableDictionary dictionary];
     }
 
     ClassBaseObject *tempClass = nil;
     
-    if((self.parsedDictionary)[baseObjectName]) {
+    
+    
+    if ((self.parsedDictionary)[baseObjectName]) {
         tempClass = (self.parsedDictionary)[baseObjectName];
     } else {
         tempClass = [ClassBaseObject new];
-        [tempClass setBaseClass:baseObjectClass];
+        tempClass.baseClass = baseObjectClass;
         
         // Set the name of the class
         BOOL isReservedWord;
         NSString *tempClassName = [baseObjectName alphanumericStringIsReservedWord:&isReservedWord fromReservedWordSet:[writer reservedWords]];
         
-        NSMutableArray *components = [[tempClassName componentsSeparatedByString:@"_"] mutableCopy];
+//        NSMutableArray *components = [[tempClassName componentsSeparatedByString:@"_"] mutableCopy];
+//        
+//        NSInteger numComponents = components.count;
+//        
+//        for (int i = 0; i < numComponents; ++i) {
+//            components[i] = [(NSString *)components[i] capitalizeFirstCharacter];
+//        }
+//        tempClassName = [components componentsJoinedByString:@""];
         
-        NSInteger numComponents = [components count];
-        for (int i = 0; i < numComponents; ++i) {
-            components[i] = [(NSString *)components[i] capitalizeFirstCharacter];
-        }
-        tempClassName = [components componentsJoinedByString:@""];
+        
+        
         
         
         if (isReservedWord) {
             tempClassName = [writer classNameForObject:tempClass fromReservedWord:tempClassName];
         }
+        
         if ([tempClassName isEqualToString:@""]) {
-            tempClassName = [NSString stringWithFormat:@"InternalBaseClass%lu", ++_numUnnamedClasses];
+            tempClassName = [NSString stringWithFormat:@"InternalBaseClass%lu", ++self.numberOfUnnamedClasses];
         }
-        [tempClass setClassName:tempClassName];
+        
+        tempClass.className = tempClassName;
     }
     
-    NSArray *array = [dict allKeys];
+    NSArray *array = dict.allKeys;
     ClassPropertiesObject *tempPropertyObject = nil;
     NSObject *tempObject = nil;
     NSObject *tempArrayObject = nil;
     
     NSUInteger numUnnamedProperties = 0;
-    for(NSString *currentKey in array) {
+    
+    for (NSString *currentKey in array) {
         @autoreleasepool {
             tempPropertyObject = [ClassPropertiesObject new];
-            [tempPropertyObject setJsonName:currentKey];
+            tempPropertyObject.jsonName = currentKey;
             // Set the name of the property
             BOOL isReservedWord;
             NSString *tempPropertyName = [[currentKey alphanumericStringIsReservedWord:&isReservedWord fromReservedWordSet:[writer reservedWords]] uncapitalizeFirstCharacter];
+            
+            
+            
             if (isReservedWord) {
                 tempPropertyName = [writer propertyNameForObject:tempPropertyObject inClass:tempClass fromReservedWord:tempPropertyName];
             }
+            
             if ([tempPropertyName isEqualToString:@""]) {
                 tempPropertyName = [NSString stringWithFormat:@"myProperty%lu", ++numUnnamedProperties];
             }
-            [tempPropertyObject setName:tempPropertyName];
+            tempPropertyObject.name = tempPropertyName;
             
             [tempPropertyObject setIsAtomic:NO];
             [tempPropertyObject setIsClass:NO];
             [tempPropertyObject setIsReadWrite:YES];
-            [tempPropertyObject setSemantics:SetterSemanticRetain];
+            tempPropertyObject.semantics = SetterSemanticRetain;
             
             tempObject = dict[currentKey];
             
             BOOL shouldSetObject = YES;
             
-            if([tempClass properties][currentKey]) {
+            
+            
+            if (tempClass.properties[currentKey]) {
                 shouldSetObject = NO;
             }
             
             
-            if([tempObject isKindOfClass:[NSArray class]]) {
+            if ([tempObject isKindOfClass:[NSArray class]]) {
                 // NSArray Objects
-                if(shouldSetObject == NO) {
-                    if ([[tempClass properties][currentKey] isKindOfClass:[NSDictionary class]]) {
+                if (shouldSetObject == NO) {
+                    if ([tempClass.properties[currentKey] isKindOfClass:[NSDictionary class]]) {
                         // Just in case it originally came in as a Dictionary and then later is shown as an array
                         // We should switch this to using an array.
                         shouldSetObject = YES;
                     }
                 }
                 
-                [tempPropertyObject setType:PropertyTypeArray];
+                tempPropertyObject.type = PropertyTypeArray;
                 
                 // We now need to check to see if the first object in the array is a NSDictionary
                 // if it is, then we need to create a new class. Also, set the collection type for
                 // the array (used by java)
-                for(tempArrayObject in (NSArray *)tempObject) {
-                    if([tempArrayObject isKindOfClass:[NSDictionary class]]) {
+                for (tempArrayObject in (NSArray *)tempObject) {
+                    if ([tempArrayObject isKindOfClass:[NSDictionary class]]) {
                         ClassBaseObject *newClass = [self parseData:(NSDictionary *)tempArrayObject intoObjectsWithBaseObjectName:currentKey andBaseObjectClass:@"NSObject" outputLanguageWriter:writer];
-                        [tempPropertyObject setReferenceClass:newClass];
-                        [tempPropertyObject setCollectionType:PropertyTypeClass];
-                        [tempPropertyObject setCollectionTypeString:newClass.className];
-                    }
-                    else if ([tempArrayObject isKindOfClass:[NSString class]]) {
-                        [tempPropertyObject setCollectionType:PropertyTypeString];
-                    }
-                    else {
+                        tempPropertyObject.referenceClass = newClass;
+                        tempPropertyObject.collectionType = PropertyTypeClass;
+                        tempPropertyObject.collectionTypeString = newClass.className;
+                    } else if ([tempArrayObject isKindOfClass:[NSString class]]) {
+                        tempPropertyObject.collectionType = PropertyTypeString;
+                    } else {
                         // Miscellaneous
                         NSString *classDecription = [[tempArrayObject class] description];
-                        if([classDecription rangeOfString:@"NSCFNumber"].location != NSNotFound) {
-                            [tempPropertyObject setCollectionType:PropertyTypeInt];
-                        } else if([classDecription rangeOfString:@"NSDecimalNumber"].location != NSNotFound) {
-                            [tempPropertyObject setCollectionType:PropertyTypeDouble];
-                        }  else if([classDecription rangeOfString:@"NSCFBoolean"].location != NSNotFound) {
-                            [tempPropertyObject setCollectionType:PropertyTypeBool];
-                        } 
-                        else {
+                        
+                        
+                        
+                        if ([classDecription rangeOfString:@"NSCFNumber"].location != NSNotFound) {
+                            tempPropertyObject.collectionType = PropertyTypeInt;
+                        } else if ([classDecription rangeOfString:@"NSDecimalNumber"].location != NSNotFound) {
+                            tempPropertyObject.collectionType = PropertyTypeDouble;
+                        } else if ([classDecription rangeOfString:@"NSCFBoolean"].location != NSNotFound) {
+                            tempPropertyObject.collectionType = PropertyTypeBool;
+                        } else {
                             DLog(@"UNDEFINED TYPE: %@", [tempArrayObject class]);
                         }
                     }
                 }
                 
-            } else if([tempObject isKindOfClass:[NSString class]]) {
+            } else if ([tempObject isKindOfClass:[NSString class]]) {
                 // NSString Objects
-                [tempPropertyObject setType:PropertyTypeString];
+                tempPropertyObject.type = PropertyTypeString;
                 
             } else if ([tempObject isKindOfClass:[NSDictionary class]]) {
                 // NSDictionary Objects
                 [tempPropertyObject setIsClass:YES];
-                [tempPropertyObject setType:PropertyTypeClass];
-                [tempPropertyObject setReferenceClass:[self parseData:(NSDictionary *)tempObject intoObjectsWithBaseObjectName:currentKey andBaseObjectClass:@"NSObject" outputLanguageWriter:writer]];
+                tempPropertyObject.type = PropertyTypeClass;
+                tempPropertyObject.referenceClass = [self parseData:(NSDictionary *)tempObject intoObjectsWithBaseObjectName:currentKey andBaseObjectClass:@"NSObject" outputLanguageWriter:writer];
                 
             } else if ([tempObject isKindOfClass:[NSNull class]]) {
-                [tempPropertyObject setType:PropertyTypeOther];
-                [tempPropertyObject setSemantics:SetterSemanticAssign];
+                tempPropertyObject.type = PropertyTypeOther;
+                tempPropertyObject.semantics = SetterSemanticAssign;
                 
             } else {
                 // Miscellaneous
@@ -221,71 +246,70 @@
                 NSString *classDecription = [[tempObject class] description];
                 BOOL isInteger = NO;
                 BOOL isDouble = NO;
-                if([number isKindOfClass:[NSNull class]]) {
+                
+                if ([number isKindOfClass:[NSNull class]]) {
                     // Huh - that's interesting.
                     isDouble = YES;
                 } else {
-                    NSNumber *tempIntNumber = @([number integerValue]);
-                    NSNumber *tempDoubleNumber = @([number doubleValue]);
+                    NSNumber *tempIntNumber = @(number.integerValue);
+                    NSNumber *tempDoubleNumber = @(number.doubleValue);
                     
-                    isDouble = [[number stringValue] isEqualToString:[tempDoubleNumber stringValue]];
-                    isInteger = [[number stringValue] isEqualToString:[tempIntNumber stringValue]];
+                    isDouble = [number.stringValue isEqualToString:tempDoubleNumber.stringValue];
+                    isInteger = [number.stringValue isEqualToString:tempIntNumber.stringValue];
                 }
                 
-                if([classDecription rangeOfString:@"NSCFBoolean"].location != NSNotFound) {
-                    [tempPropertyObject setType:PropertyTypeBool];
-                    [tempPropertyObject setSemantics:SetterSemanticAssign];
-                } else if(isDouble) {
-                    [tempPropertyObject setType:PropertyTypeDouble];
-                    [tempPropertyObject setSemantics:SetterSemanticAssign];
-                } else if(isInteger) {
-                    [tempPropertyObject setType:PropertyTypeInt];
-                    [tempPropertyObject setSemantics:SetterSemanticAssign];
+                if ([classDecription rangeOfString:@"NSCFBoolean"].location != NSNotFound) {
+                    tempPropertyObject.type = PropertyTypeBool;
+                    tempPropertyObject.semantics = SetterSemanticAssign;
+                } else if (isDouble) {
+                    tempPropertyObject.type = PropertyTypeDouble;
+                    tempPropertyObject.semantics = SetterSemanticAssign;
+                } else if (isInteger) {
+                    tempPropertyObject.type = PropertyTypeInt;
+                    tempPropertyObject.semantics = SetterSemanticAssign;
                 } else {
                     DLog(@"UNDEFINED TYPE: %@", [tempObject class]);
                 }
                 // This is undefined right now - add other if
             }
                         
-            if(shouldSetObject) {
-                [tempClass properties][currentKey] = tempPropertyObject;
+            if (shouldSetObject) {
+                tempClass.properties[currentKey] = tempPropertyObject;
             }
         }
     }
     
     (self.parsedDictionary)[baseObjectName] = tempClass;
+    
     return tempClass;
 }
 
-- (NSDictionary *)parsedDictionaryByReplacingReservedWords:(NSArray *)reservedWords
-{
-    if (nil == _parsedDictionary) {
+- (NSDictionary *)parsedDictionaryByReplacingReservedWords:(NSArray *)reservedWords {
+    if (self.parsedDictionary == nil) {
         return nil;
     }
+    
     return nil;
 }
 
-
 #pragma mark - NSCoding methods
 
--(id)initWithCoder:(NSCoder *)aDecoder {
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
     
     self = [self init];
     self.rawJSONObject = [aDecoder decodeObjectForKey:@"rawJSONObject"];
     self.parsedDictionary = [aDecoder decodeObjectForKey:@"parsedDictionary"];
     self.parseComplete = [aDecoder decodeBoolForKey:@"parseComplete"];
     self.JSONString = [aDecoder decodeObjectForKey:@"JSONString"];
+  
     return self;
-    
 }
 
--(void)encodeWithCoder:(NSCoder *)aCoder {
-    
-    [aCoder encodeObject:_rawJSONDictionary forKey:@"rawJSONObject"];
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:_rawJSONObject forKey:@"rawJSONObject"];
     [aCoder encodeObject:_parsedDictionary forKey:@"parsedDictionary"];
     [aCoder encodeBool:_parseComplete forKey:@"parseComplete"];
     [aCoder encodeObject:_JSONString forKey:@"JSONString"];
-    
 }
 
 @end

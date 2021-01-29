@@ -1,10 +1,17 @@
 //
-//  CoreDataModelGenerator.m
-//  JSONModeler
+// Copyright 2016 The Nerdery, LLC
 //
-//  Created by Sean Hickey on 1/24/12.
-//  Copyright (c) 2012 Nerdery Interactive Labs. All rights reserved.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #import "CoreDataModelGenerator.h"
 #import "ClassBaseObject.h"
@@ -17,7 +24,7 @@
     
 }
 
-- (NSXMLElement *)modelRootElement;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSXMLElement *modelRootElement;
 - (NSXMLElement *)entityElementForClassBaseObject:(ClassBaseObject *)classBaseObject;
 - (NSXMLElement *)attributeElementForClassPropertiesObject:(ClassPropertiesObject *)classPropertiesObject;
 - (NSXMLElement *)relationshipElementForClassPropertiesObject:(ClassPropertiesObject *)classPropertiesObject forEntityNamed:(NSString *)entityName;
@@ -28,25 +35,26 @@
 
 @implementation CoreDataModelGenerator
 
-- (NSXMLDocument *)coreDataModelXMLDocumentFromClassObjects:(NSArray *)classObjects
-{
+- (NSXMLDocument *)coreDataModelXMLDocumentFromClassObjects:(NSArray *)classObjects {
     NSXMLElement *rootElement = [self modelRootElement];
+    
+    
     
     for (ClassBaseObject *classObject in classObjects) {
         
         NSXMLElement *entity = [self entityElementForClassBaseObject:classObject];
+        NSArray *properties = classObject.properties.allValues;
         
-        NSArray *properties = [[classObject properties] allValues];
         for (ClassPropertiesObject *property in properties) {
             
             PropertyType type = property.type;
             
             NSXMLElement *childElement;
+            
             if (type == PropertyTypeString || type == PropertyTypeInt || type == PropertyTypeDouble || type == PropertyTypeBool || type == PropertyTypeOther) {
                 childElement = [self attributeElementForClassPropertiesObject:property];
-            }
-            else if (type == PropertyTypeArray || type == PropertyTypeDictionary || type == PropertyTypeClass || type == PropertyTypeOther) {
-                childElement = [self relationshipElementForClassPropertiesObject:property forEntityNamed:[[entity attributeForName:@"name"] stringValue]];
+            } else if (type == PropertyTypeArray || type == PropertyTypeDictionary || type == PropertyTypeClass || type == PropertyTypeOther) {
+                childElement = [self relationshipElementForClassPropertiesObject:property forEntityNamed:[entity attributeForName:@"name"].stringValue];
             }
             
             [entity addChild:childElement];
@@ -57,10 +65,12 @@
     
     NSArray *inverseRelationships = [self computeInverseRelationshipsForModel:rootElement];
     NSArray *entities = [rootElement elementsForName:@"entity"];
+    
     for (NSXMLElement *inverse in inverseRelationships) {
-        NSString *entityNeedingInverseName = [[[inverse attributeForName:@"inverseName"] stringValue] uppercaseCamelcaseString];
+        NSString *entityNeedingInverseName = [[inverse attributeForName:@"inverseName"].stringValue uppercaseCamelcaseString];
+        
         for (NSXMLElement *entity in entities) {
-            if ([[[entity attributeForName:@"name"] stringValue] isEqualToString:entityNeedingInverseName]) {
+            if ([[entity attributeForName:@"name"].stringValue isEqualToString:entityNeedingInverseName]) {
                 @try {
                     [entity addChild:inverse];
                 }
@@ -77,16 +87,15 @@
     [rootElement addChild:uiInfo];
     
     NSXMLDocument *modelDoc = [[NSXMLDocument alloc] initWithRootElement:rootElement];
-    [modelDoc setDocumentContentKind:NSXMLDocumentXMLKind];
-    [modelDoc setVersion:@"1.0"];
-    [modelDoc setCharacterEncoding:@"UTF-8"];
+    modelDoc.documentContentKind = NSXMLDocumentXMLKind;
+    modelDoc.version = @"1.0";
+    modelDoc.characterEncoding = @"UTF-8";
     [modelDoc setStandalone:YES];
     
     return modelDoc;
 }
 
-- (NSXMLElement *)modelRootElement
-{
+- (NSXMLElement *)modelRootElement {
     NSXMLElement *modelElement = [[NSXMLElement alloc] initWithName:@"model"];
     
     NSXMLNode *nameAttribute = [NSXMLNode attributeWithName:@"name" stringValue:@""];
@@ -113,8 +122,7 @@
     return modelElement;
 }
 
-- (NSXMLElement *)entityElementForClassBaseObject:(ClassBaseObject *)classBaseObject
-{
+- (NSXMLElement *)entityElementForClassBaseObject:(ClassBaseObject *)classBaseObject {
     NSXMLElement *entity = [[NSXMLElement alloc] initWithName:@"entity"];
     
     NSXMLNode *nameAttribute = [NSXMLNode attributeWithName:@"name" stringValue:classBaseObject.className];
@@ -128,10 +136,10 @@
     return entity;
 }
 
-- (NSXMLElement *)attributeElementForClassPropertiesObject:(ClassPropertiesObject *)classPropertiesObject
-{
+- (NSXMLElement *)attributeElementForClassPropertiesObject:(ClassPropertiesObject *)classPropertiesObject {
     /* Check to make sure we can actually create an attribute of this type */
     PropertyType type = classPropertiesObject.type;
+    
     if (type == PropertyTypeArray || type == PropertyTypeDictionary || type == PropertyTypeClass || type == PropertyTypeOther) {
         NSLog(@"Error: %@ does not have a valid attribute type", classPropertiesObject);
         return nil;
@@ -150,20 +158,18 @@
     
     /* Determine the backing type for the attribute */
     NSString *attributeType = nil;
+    
     if (type == PropertyTypeString) {
         attributeType = @"String";
-    }
-    else if (type == PropertyTypeInt) {
+    } else if (type == PropertyTypeInt) {
         attributeType = @"Integer 32";
-    }
-    else if (type == PropertyTypeDouble) {
+    } else if (type == PropertyTypeDouble) {
         attributeType = @"Double";
-    }
-    else if (type == PropertyTypeBool) {
+    } else if (type == PropertyTypeBool) {
         attributeType = @"Boolean";
-    }
-    else {
+    } else {
         NSLog(@"Error: %@ does not have a valid attribute type", classPropertiesObject);
+        
         return nil;
     }
     
@@ -175,8 +181,7 @@
     if (type == PropertyTypeInt) {
         NSXMLNode *defaultValue = [NSXMLNode attributeWithName:@"defaultValueString" stringValue:@"0"];
         [element addAttribute:defaultValue];
-    }
-    else if (type == PropertyTypeDouble) {
+    } else if (type == PropertyTypeDouble) {
         NSXMLNode *defaultValue = [NSXMLNode attributeWithName:@"defaultValueString" stringValue:@"0.0"];
         [element addAttribute:defaultValue];
     }
@@ -189,12 +194,13 @@
     
 }
 
-- (NSXMLElement *)relationshipElementForClassPropertiesObject:(ClassPropertiesObject *)classPropertiesObject forEntityNamed:(NSString *)entityName
-{
+- (NSXMLElement *)relationshipElementForClassPropertiesObject:(ClassPropertiesObject *)classPropertiesObject forEntityNamed:(NSString *)entityName {
     /* Check to make sure we can actually create a relationship */
     PropertyType type = classPropertiesObject.type;
+    
     if (type == PropertyTypeString || type == PropertyTypeInt || type == PropertyTypeDouble || type == PropertyTypeBool || type == PropertyTypeOther) {
         NSLog(@"Error: %@ does not have a valid attribute type", classPropertiesObject);
+        
         return nil;
     }
     
@@ -238,17 +244,17 @@
     return element;
 }
 
-- (NSXMLElement *)UIElementsElementForModel:(NSXMLElement *)model
-{
+- (NSXMLElement *)UIElementsElementForModel:(NSXMLElement *)model {
     NSXMLElement *elementsNode = [[NSXMLElement alloc] initWithName:@"elements"];
     
     NSArray *entities = [model elementsForName:@"entity"];
     
     int i = 0;
+    
     for (NSXMLElement *entity in entities) {
         NSXMLElement *element = [[NSXMLElement alloc] initWithName:@"element"];
         
-        NSXMLNode *nameAttribute = [NSXMLNode attributeWithName:@"name" stringValue:[[entity attributeForName:@"name"] stringValue]];
+        NSXMLNode *nameAttribute = [NSXMLNode attributeWithName:@"name" stringValue:[entity attributeForName:@"name"].stringValue];
         [element addAttribute:nameAttribute];
         
         NSXMLNode *positionXAttribute = [NSXMLNode attributeWithName:@"positionX" stringValue:[NSString stringWithFormat:@"%i", i * 200]];
@@ -260,7 +266,7 @@
         NSXMLNode *widthAttribute = [NSXMLNode attributeWithName:@"width" stringValue:@"135"];
         [element addAttribute:widthAttribute];
         
-        NSUInteger countChildren = [entity childCount];
+        NSUInteger countChildren = entity.childCount;
         
         NSXMLNode *heightAttribute = [NSXMLNode attributeWithName:@"height" stringValue:[NSString stringWithFormat:@"%i", ((int)countChildren * 15) + 45]];
         [element addAttribute:heightAttribute];
@@ -273,18 +279,19 @@
     return elementsNode;
 }
 
-- (NSArray *)computeInverseRelationshipsForModel:(NSXMLElement *)model
-{
+- (NSArray *)computeInverseRelationshipsForModel:(NSXMLElement *)model {
     NSArray *entities = [model elementsForName:@"entity"];
     
     NSMutableArray *newRelationships = [[NSMutableArray alloc] init];
+    
     for (NSXMLElement *entity in entities) {
         NSArray *relationships = [entity elementsForName:@"relationship"];
+        
         for (NSXMLElement *relationship in relationships) {
             
             NSXMLElement *newRelationship = [[NSXMLElement alloc] initWithName:@"relationship"];
             
-            NSXMLNode *nameAttribute = [NSXMLNode attributeWithName:@"name" stringValue:[[relationship attributeForName:@"inverseName"] stringValue]];
+            NSXMLNode *nameAttribute = [NSXMLNode attributeWithName:@"name" stringValue:[relationship attributeForName:@"inverseName"].stringValue];
             [newRelationship addAttribute:nameAttribute];
             
             NSXMLNode *optionalAttribute = [NSXMLNode attributeWithName:@"optional" stringValue:@"YES"];
@@ -294,15 +301,15 @@
             [newRelationship addAttribute:deletionAttribute];
             
             /* Set the destination entity */
-            NSXMLNode *destinationAttribute = [NSXMLNode attributeWithName:@"destinationEntity" stringValue:[[entity attributeForName:@"name"] stringValue]];
+            NSXMLNode *destinationAttribute = [NSXMLNode attributeWithName:@"destinationEntity" stringValue:[entity attributeForName:@"name"].stringValue];
             [newRelationship addAttribute:destinationAttribute];
             
             /* Set the inverse relationship */
-            NSXMLNode *inverseAttribute = [NSXMLNode attributeWithName:@"inverseName" stringValue:[[relationship attributeForName:@"name"] stringValue]];
+            NSXMLNode *inverseAttribute = [NSXMLNode attributeWithName:@"inverseName" stringValue:[relationship attributeForName:@"name"].stringValue];
             [newRelationship addAttribute:inverseAttribute];
             
             /* Set the inverse entity name */
-            NSXMLNode *inverseEntityAttribute = [NSXMLNode attributeWithName:@"inverseEntity" stringValue:[[entity attributeForName:@"name"] stringValue]];
+            NSXMLNode *inverseEntityAttribute = [NSXMLNode attributeWithName:@"inverseEntity" stringValue:[entity attributeForName:@"name"].stringValue];
             [newRelationship addAttribute:inverseEntityAttribute];
             
             /* Add the syncable attribute */
@@ -318,25 +325,3 @@
 }
 
 @end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

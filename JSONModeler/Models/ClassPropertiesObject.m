@@ -1,10 +1,17 @@
 //
-//  ClassPropertiesObject.m
-//  JSONModeler
+// Copyright 2016 The Nerdery, LLC
 //
-//  Created by Jon Rexeisen on 11/4/11.
-//  Copyright (c) 2011 Nerdery Interactive Labs. All rights reserved.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #import "ClassPropertiesObject.h"
 #import "ClassBaseObject.h"
@@ -16,32 +23,17 @@
 @end
 
 @implementation ClassPropertiesObject
-@synthesize name = _name;
-@synthesize jsonName = _mappedName;
-@synthesize type = _type;
-@synthesize otherType = _otherType;
-
-@synthesize collectionType = _collectionType;
-@synthesize collectionTypeString = _collectionTypeString;
-
-@synthesize referenceClass = _referenceClass;
-
-@synthesize isClass = _isClass;
-@synthesize isAtomic = _isAtomic;
-@synthesize isReadWrite = _isReadWrite;
-@synthesize semantics = _semantics;
 
 // Builds the header implementation and is convienient for debugging
-- (NSString *) description 
-{
-    OutputLanguageWriterObjectiveC *writer = [OutputLanguageWriterObjectiveC new];
+- (NSString *)description {
+    OutputLanguageWriterObjectiveC *writer = [[OutputLanguageWriterObjectiveC alloc] init];
+    
     return [writer propertyForProperty:self];
 }
 
 #pragma mark - NSCoding methods
 
--(id)initWithCoder:(NSCoder *)aDecoder
-{
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [self init];
     
     self.name = [aDecoder decodeObjectForKey:@"name"];
@@ -62,10 +54,9 @@
     return self;
 }
 
--(void)encodeWithCoder:(NSCoder *)aCoder
-{
+- (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:_name forKey:@"name"];
-    [aCoder encodeObject:_mappedName forKey:@"jsonName"];
+    [aCoder encodeObject:_jsonName forKey:@"jsonName"];
     [aCoder encodeInt:_type forKey:@"type"];
     [aCoder encodeObject:_otherType forKey:@"otherType"];
     

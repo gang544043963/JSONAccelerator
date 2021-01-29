@@ -1,3 +1,6 @@
+/* "Alert body when trying to download a file and it is not in the right format" */
+"alert.message.notValidData" = "无法解析JSON响应";
+
 /* If something went wrong, but the writing was generally successful */
 " However, there was an error writing one or more of the files" = " 抱歉，写入一个或多个文件时出现错误";
 

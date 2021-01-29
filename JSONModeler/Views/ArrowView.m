@@ -1,18 +1,25 @@
 //
-//  ArrowView.m
-//  JSONAccelerator
+// Copyright 2016 The Nerdery, LLC
 //
-//  Created by Jonathan Rexeisen on 6/14/12.
-//  Copyright (c) 2012 Nerdery Interactive Labs. All rights reserved.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #import "ArrowView.h"
 
 @implementation ArrowView
 
-- (id)initWithFrame:(NSRect)frame
-{
+- (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
+    
     if (self) {
         // Initialization code here.
     }
@@ -20,8 +27,7 @@
     return self;
 }
 
-- (void)drawRect:(NSRect)dirtyRect
-{
+- (void)drawRect:(NSRect)dirtyRect {
     //// Color Declarations
     NSColor* newGradientColor = [NSColor colorWithCalibratedRed: 0.2 green: 0.64 blue: 0.68 alpha: 1];
     NSColor* newGradientColor2 = [NSColor colorWithCalibratedRed: 0 green: 0.37 blue: 0.56 alpha: 1];
@@ -44,7 +50,7 @@
     [newGradient drawInBezierPath: bezier2Path angle: -90];
     
     [newGradientColor2 setStroke];
-    [bezier2Path setLineWidth: 1];
+    bezier2Path.lineWidth = 1;
     [bezier2Path stroke];
     
 }

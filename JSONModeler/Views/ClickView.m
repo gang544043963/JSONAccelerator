@@ -1,32 +1,30 @@
 //
-//  ClickView.m
-//  JSONModeler
+// Copyright 2016 The Nerdery, LLC
 //
-//  Created by Jon Rexeisen on 3/13/12.
-//  Copyright (c) 2012 Nerdery Interactive Labs. All rights reserved.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #import "ClickView.h"
 
 @interface ClickView ()
 
-
 @end
 
 @implementation ClickView
-@synthesize capLeft = _capLeft;
-@synthesize capMiddle = _capMiddle;
-@synthesize capRight = _capRight;
-@synthesize disabledCapLeft = _disabledCapLeft;
-@synthesize disabledCapMiddle = _disabledCapMiddle;
-@synthesize disabledCapRight = _disabledCapRight;
-@synthesize delegate = _delegate;
-@synthesize enabled = _enabled;
 
-- (id)initWithFrame:(NSRect)frameRect
-{
+- (instancetype)initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
-    if(self) {
+    
+    if (self) {
         // Tracking area
         NSTrackingAreaOptions trackingOptions =
 		NSTrackingCursorUpdate | NSTrackingEnabledDuringMouseDrag | NSTrackingMouseEnteredAndExited |
@@ -35,7 +33,7 @@
         _enabled = YES;
         
         myTrackingArea = [[NSTrackingArea alloc]
-                          initWithRect: [self bounds] // in our case track the entire view
+                          initWithRect: self.bounds // in our case track the entire view
                           options: trackingOptions
                           owner: self
                           userInfo: nil];
@@ -61,21 +59,18 @@
 
 
 
-- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
-{
+- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent {
     NSLog ( @"Accepts First Mouse" );
     return YES;
 }
 
-- (BOOL)acceptsFirstResponder
-{
+- (BOOL)acceptsFirstResponder {
     NSLog ( @"Accepts First Responder" );
     return YES;
 }
 
-- (void)mouseDown:(NSEvent*)theEvent
-{
-    if(self.enabled && self.delegate != nil) {
+- (void)mouseDown:(NSEvent*)theEvent {
+    if (self.enabled && self.delegate != nil) {
         [self.delegate clickViewPressed:self];
     }
 }

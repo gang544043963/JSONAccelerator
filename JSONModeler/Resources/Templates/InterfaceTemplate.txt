@@ -12,7 +12,7 @@
 @interface {CLASSNAME} : {BASEOBJECT} <NSCoding, NSCopying>
 
 {PROPERTIES}
-+ ({CLASSNAME} *)modelObjectWithDictionary:(NSDictionary *)dict;
++ (instancetype)modelObjectWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 - (NSDictionary *)dictionaryRepresentation;
 

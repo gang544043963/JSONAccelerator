@@ -93,8 +93,7 @@
 	return markerImage;
 }
 
-- (void)mouseDown:(NSEvent *)theEvent
-{
+- (void)mouseDown:(NSEvent *)theEvent {
     return;
 	NSPoint					location;
 	NSUInteger				line;
@@ -102,12 +101,16 @@
 	location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	line = [self lineNumberForLocation:location.y];
 	
+	
+	
 	if (line != NSNotFound)
 	{
 
 		NoodleLineNumberMarker		*marker;
 		
 		marker = [self markerAtLine:line];
+		
+		
 		
 		if (marker != nil)
 		{
@@ -126,11 +129,12 @@
 	}
 }
 
-- (void)placeMarkerAtLine:(NSUInteger)line
-{
+- (void)placeMarkerAtLine:(NSUInteger)line {
     NoodleLineNumberMarker		*marker;
     
     marker = [self markerAtLine:line];
+    
+    
     
     if (marker != nil)
     {

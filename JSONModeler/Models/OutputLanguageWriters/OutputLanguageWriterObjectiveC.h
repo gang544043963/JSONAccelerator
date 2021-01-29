@@ -1,10 +1,17 @@
 //
-//  OutputLanguageWriterObjectiveC.h
-//  JSONModeler
+// Copyright 2016 The Nerdery, LLC
 //
-//  Created by Jon Rexeisen on 1/19/12.
-//  Copyright (c) 2012 Nerdery Interactive Labs. All rights reserved.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #import <Foundation/Foundation.h>
 #import "ClassPropertiesObject.h"
@@ -12,12 +19,10 @@
 #import "ClassBaseObject.h"
 
 /* Writing options keys for OutputLanguageWriterProtocol methods */
-static NSString *const kObjectiveCWritingOptionBaseClassName = @"kObjectiveCWritingOptionBaseClassName";
-static NSString *const kObjectiveCWritingOptionUseARC = @"kObjectiveCWritingOptionUseARC";
-static NSString *const kObjectiveCWritingOptionClassPrefix = @"kObjectiveCWritingOptionClassPrefix";
-
+static NSString * const kObjectiveCWritingOptionBaseClassName = @"kObjectiveCWritingOptionBaseClassName";
+static NSString * const kObjectiveCWritingOptionUseARC = @"kObjectiveCWritingOptionUseARC";
+static NSString * const kObjectiveCWritingOptionClassPrefix = @"kObjectiveCWritingOptionClassPrefix";
 
 @interface OutputLanguageWriterObjectiveC : NSObject <OutputLanguageWriterProtocol>
-
 
 @end
