@@ -7,16 +7,12 @@ This is really an amazing tool for developers.
 
 - I fixed an issue about displaying:
 
-Once you click "Option" button on Choice Folder panel view, the customer option view will show. But the "Option View" can not be fully shown. This is due to constrains. I fixed it, see below image:
+Once you click "Option" button on Choice Folder panel view, the customer option view will show. But the "Option View" can not be fully shown. This is due to the constrains. I fixed it, see below snapshot:
+
+<img src="https://github.com/gang544043963/MyDataSource/blob/master/Screen%20Shot%202021-01-29%20at%204.46.58%20PM.png?raw=true" alt="CXLSlideList Screenshot" width="500" height="290"/>
 
 
-
-
-
-
-
-
-# ------------------------------------------------------
+------------------------------------------------------
 # JSON Accelerator
 
 JSON Accelerator helps developers from all programming language persuasions get data, verify it, and write model objects - Objective C, Java, or Python. It’s complexity, simplified.
